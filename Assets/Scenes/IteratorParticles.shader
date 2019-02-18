@@ -57,8 +57,8 @@
 				float2 pPos = tex2D(_ParticlesTex, 1-i.uv);
 				float value = tex2D(_MainTex, pPos).r; 
 				
-				float dx = tex2D(_MainTex, i.uv + xx).r;
-				float dy = tex2D(_MainTex, i.uv + yy).r;
+				float dx = tex2D(_MainTex, pPos + xx).r;
+				float dy = tex2D(_MainTex, pPos + yy).r;
                 
                 
 				float2 gradient =  (float2(dx - value, dy - value));

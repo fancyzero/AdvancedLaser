@@ -42,8 +42,8 @@ Shader "Unlit/LaserBeam"
 	{
 		v2f o;
 		float4 offset = float4(tex2Dlod(_MainTex, float4(v.uv,0,0)).rg,0,0);
-		float4 worldPos = mul(unity_ObjectToWorld, float4(v.vertex));
-		o.vertex = mul(UNITY_MATRIX_VP, worldPos+offset);
+		float4 worldPos = mul(unity_ObjectToWorld, float4(offset));
+		o.vertex = mul(UNITY_MATRIX_VP, worldPos);
 		o.uv = TRANSFORM_TEX(v.uv,_MainTex);
 		return o;
 	}
