@@ -7,8 +7,8 @@ Material:
   m_CorrespondingSourceObject: {fileID: 0}
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
-  m_Name: Unlit_gradient
-  m_Shader: {fileID: 4800000, guid: d161de3a83a43ef488c659871c5545e6, type: 3}
+  m_Name: Unlit_ShowGradient
+  m_Shader: {fileID: 4800000, guid: e8319afd1eb72284c9479f43d4d270d8, type: 3}
   m_ShaderKeywords: 
   m_LightmapFlags: 4
   m_EnableInstancingVariants: 0
@@ -20,16 +20,8 @@ Material:
     serializedVersion: 3
     m_TexEnvs:
     - _MainTex:
-        m_Texture: {fileID: 2800000, guid: 967baddcc38e6bf4696775aee9d36404, type: 3}
-        m_Scale: {x: 1, y: 1}
-        m_Offset: {x: 0, y: 0}
-    - _ParticlesTex:
         m_Texture: {fileID: 8400000, guid: 248dbae6ffc9c0047940ebe9c4601a00, type: 2}
         m_Scale: {x: 1, y: 1}
         m_Offset: {x: 0, y: 0}
-    m_Floats:
-    - _slowdown: 3
-    - _speed: 0.03
-    - _steps: 100
-    - _textureSize: 128
+    m_Floats: []
     m_Colors: []

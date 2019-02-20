@@ -23,11 +23,13 @@ public class IteraotParticles : MonoBehaviour
     // Update is called once per frame
     void Update()
     {
+        Graphics.CopyTexture(RT2, RT1);
         var cam = GetComponent<Camera>();
-        plane.GetComponent<MeshRenderer>().material.SetTexture("_ParticlesTex", RT2);
-        cam.targetTexture = RT1;
-        cam.Render();
-        SwapRT();
+        plane.GetComponent<MeshRenderer>().material.SetTexture("_ParticlesTex", RT1);
+        cam.targetTexture = RT2;
+
+//        cam.Render();
+        //SwapRT();
 
     }
 }

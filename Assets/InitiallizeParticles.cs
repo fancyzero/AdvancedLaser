@@ -17,7 +17,8 @@ public class InitiallizeParticles : MonoBehaviour
     {
         var cam = GetComponent<Camera>();
         cam.Render();
-        particleItoerator.SetActive(true);
+        if (particleItoerator)
+            particleItoerator.SetActive(true);
         gameObject.SetActive(false);
     }
 }

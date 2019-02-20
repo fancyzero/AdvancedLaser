@@ -4,6 +4,9 @@ Shader "Unlit/LaserBeam"
 {
 	Properties
 	{
+		_psize("particle size", Float) = 0.02
+		_offsetScale("offset scale", Float) = 1
+
 		_MainTex("Texture", 2D) = "white" {}
 	}
 		SubShader
@@ -12,7 +15,7 @@ Shader "Unlit/LaserBeam"
 		LOD 100
 		CULL OFF
 		Pass
-	{
+		{
 
 		CGPROGRAM
 #pragma vertex vert
@@ -23,38 +26,63 @@ Shader "Unlit/LaserBeam"
 #include "UnityCG.cginc"
 
 		struct appdata
-	{
+		{
 		float4 vertex : POSITION;
 		float2 uv : TEXCOORD0;
+		float2 uv2 : TEXCOORD1;
+		float2 uv3 : TEXCOORD2;
+
+
+
 	};
 
 	struct v2f
 	{
 		float2 uv : TEXCOORD0;
-		UNITY_FOG_COORDS(1)
-			float4 vertex : SV_POSITION;
+		float4 vertex : SV_POSITION;
+		float2 localPos:TEXCOORD1;
+		float4 an:TEXCOORD2;
+
 	};
 
 	sampler2D _MainTex;
 	float4 _MainTex_ST;
+	float _psize;
+	float _offsetScale;
+
 
 	v2f vert(appdata v)
 	{
 		v2f o;
-		float4 offset = float4(tex2Dlod(_MainTex, float4(v.uv,0,0)).rg,0,0);
-		float4 worldPos = mul(unity_ObjectToWorld, float4(offset));
-		o.vertex = mul(UNITY_MATRIX_VP, worldPos);
-		o.uv = TRANSFORM_TEX(v.uv,_MainTex);
+		float2 p = float2(0, 1 / 128.0);
+		float2 posOffset0 = float3(tex2Dlod(_MainTex, float4(v.uv - p, 0, 0)).rg, 0);
+		float2 posOffset1 = float3(tex2Dlod(_MainTex, float4(v.uv, 0, 0)).rg, 0);
+		float2 posOffset2 = float3(tex2Dlod(_MainTex, float4(v.uv + p, 0, 0)).rg,0);
+		float2 dirback = normalize(posOffset0 - posOffset1);
+		float2 dirfwd = normalize(posOffset1 - posOffset2);
+
+		dirback = float2(-dirback.y, dirback.x);
+		dirfwd = float2(-dirfwd.y, dirfwd.x);
+		float2 extent = normalize(dirback + dirfwd);
+		o.vertex = UnityObjectToClipPos(v.vertex + float3(-1 * v.uv2.x*extent*_psize + (posOffset1 * _offsetScale), 0));//+ 
+		o.uv = TRANSFORM_TEX(v.uv, _MainTex);
+
+		float2 posOffsetA = float3(tex2Dlod(_MainTex, float4(v.uv3 - p, 0, 0)).rg, 0);
+		float2 posOffsetB = float3(tex2Dlod(_MainTex, float4(v.uv3, 0, 0)).rg, 0);
+
+		o.localPos =  v.vertex + float3(-1 * v.uv2.x*extent*_psize + (posOffset1 * _offsetScale), 0).xy;
+		o.an.xy = posOffsetB;
+		o.an.zw = normalize(posOffsetA - posOffsetB);
 		return o;
 	}
-
+	float distanceToLine(float2 a, float2 n, float2 p)
+	{
+		return length(a - p - dot(a - p, n)*n);
+	}
 	fixed4 frag(v2f i) : SV_Target
 	{
-		// sample the texture
-		fixed4 col = tex2D(_MainTex, i.uv);
-	// apply fog
-	//UNITY_APPLY_FOG(i.fogCoord, col);
-	return col;
+		float d = distanceToLine(i.an.xy, i.an.zw, i.localPos);
+		return  float4(d,d,d,1);
 	}
 		ENDCG
 	}
