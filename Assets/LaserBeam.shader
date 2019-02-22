@@ -64,10 +64,10 @@ Shader "Unlit/LaserBeam"
 		dirback = float2(-dirback.y, dirback.x);
 		dirfwd = float2(-dirfwd.y, dirfwd.x);
 		float2 extent = normalize(dirback + dirfwd);
-		o.vertex = UnityObjectToClipPos(v.vertex + float3(-1 * v.uv2.x*extent*_psize + (posOffset1 * _offsetScale), 0));//+ 
+		o.vertex = UnityObjectToClipPos( float3(-1 * v.uv2.x*extent*_psize + (posOffset1 * _offsetScale), 0));//+ 
 		o.uv = TRANSFORM_TEX(v.uv, _MainTex);
 
-		float2 posOffsetA = float3(tex2Dlod(_MainTex, float4(v.uv3 - p, 0, 0)).rg, 0);
+		float2 posOffsetA = float3(tex2Dlod(_MainTex, float4(v.uv3 + p, 0, 0)).rg, 0);
 		float2 posOffsetB = float3(tex2Dlod(_MainTex, float4(v.uv3, 0, 0)).rg, 0);
 
 		o.localPos =  v.vertex + float3(-1 * v.uv2.x*extent*_psize + (posOffset1 * _offsetScale), 0).xy;
@@ -82,6 +82,7 @@ Shader "Unlit/LaserBeam"
 	fixed4 frag(v2f i) : SV_Target
 	{
 		float d = distanceToLine(i.an.xy, i.an.zw, i.localPos);
+	d = saturate(1 - d / (_psize));
 		return  float4(d,d,d,1);
 	}
 		ENDCG

@@ -59,7 +59,7 @@ public class LaserBeam : MonoBehaviour
         //    }
         //}
 
-        int cnt = 50;
+        int cnt = 128;
         for ( int i=0;i < cnt-2; i++)
         {
             int ii = i + 1;
@@ -69,16 +69,19 @@ public class LaserBeam : MonoBehaviour
             var prev = p0 - new Vector3(1, 1, 0);
             var center = p - new Vector3(1, 1, 0);
             var next = p2 - new Vector3(1, 1, 0);
-            verts.Add(center);
-            verts.Add(center);
-            verts.Add(next);
-            verts.Add(next);
+            verts.Add(Vector3.zero);
+            verts.Add(Vector3.zero);
+            verts.Add(Vector3.zero);
+            verts.Add(Vector3.zero);
             uvs2.Add(new Vector2(-1, 0));
             uvs2.Add(new Vector2(1,  0));
-            uvs2.Add(new Vector2(-1,0));
-            uvs2.Add(new Vector2(1,0));
-
-            uvs.Add(new Vector2(p.x,p.y));
+            uvs2.Add(new Vector2(-1, 0));
+            uvs2.Add(new Vector2(1,  0));
+            int dim = 128;
+            float x = i / dim;
+            float y = i % dim;
+            
+            uvs.Add(new Vector2(p.x, p.y));
             uvs.Add(new Vector2(p.x, p.y));
             uvs.Add(new Vector2(p2.x, p2.y));
             uvs.Add(new Vector2(p2.x, p2.y));
@@ -105,6 +108,6 @@ public class LaserBeam : MonoBehaviour
     // Update is called once per frame
     void Update()
     {
-        
+        GetComponent<MeshFilter>().mesh.bounds = new Bounds(Vector3.zero, Vector3.one * 100000);
     }
 }
